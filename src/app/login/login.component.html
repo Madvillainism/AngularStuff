@@ -1,0 +1,61 @@
+<div class="login-container">
+  <img src="assets/book.png" class="login-image" />
+
+  <!--MEJORAR FORMULARIO-->
+  <div class="form-container">
+    <h1>Sign in with:</h1>
+    <button mat-fab color="primary">
+      <mat-icon class="icon fa fa-user" aria-hidden="true">android</mat-icon>
+    </button>
+
+    <button mat-fab color="primary">
+      <mat-icon class="icon fa fa-user" aria-hidden="true">whatshot</mat-icon>
+    </button>
+
+    <button mat-fab color="primary">
+      <mat-icon class="icon fa fa-user" aria-hidden="true">school</mat-icon>
+    </button>
+
+    <p>or</p>
+    <div class="divide-line"></div>
+
+    <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+      <input
+        type="text"
+        class="input-field"
+        formControlName="name"
+        autofocus
+        id="name"
+      />
+
+      <input
+        type="email"
+        class="input-field"
+        formControlName="email"
+        id="email"
+      />
+
+      <input
+        type="password"
+        class="input-field"
+        formControlName="password"
+        id="password"
+      />
+
+      <div class="remember-box">
+        <input
+          type="checkbox"
+          formControlName="remember"
+          id="remember"
+          class="remember"
+        />
+        <label for="remember">Remember me</label>
+        <p class="forgot">Forgot password?</p>
+      </div>
+
+      <button type="submit" class="submit-button" [disabled]="!myForm.valid">
+        Register
+      </button>
+    </form>
+  </div>
+</div>

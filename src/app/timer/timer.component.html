@@ -1,0 +1,31 @@
+<div class="form-container">
+  <h2>FORM</h2>
+  <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+    <label for="name">Name:</label>
+    <input type="text" class="input-field" formControlName="name" id="name" />
+
+    <label for="name">Email:</label>
+    <input
+      type="email"
+      class="input-field"
+      formControlName="email"
+      id="email"
+    />
+
+    <label for="name">Password:</label>
+    <input
+      type="password"
+      class="input-field"
+      formControlName="password"
+      id="password"
+    />
+
+    <button type="submit" class="submit-button" [disabled]="!myForm.valid">
+      Submit
+    </button>
+  </form>
+
+  <p *ngIf="!myForm.valid && myForm.touched">
+    Complete the form to advance, please.
+  </p>
+</div>
