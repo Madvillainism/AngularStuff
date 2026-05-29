@@ -7,6 +7,8 @@ import { Product } from '../types/Product';
 export class CartService {
   constructor() {}
 
+  productsInCart = signal<Product[]>([]);
+
   addToCart(product: Product) {}
 
   salute(name: string) {
