@@ -11,6 +11,8 @@ import { LoginComponent } from './login/login.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Routes, RouterModule, RouterOutlet } from '@angular/router';
+import { ShopCartComponent } from './shop-cart/shop-cart.component';
+import { ProductListComponent } from './product-list/product-list.component';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent },
@@ -30,6 +32,10 @@ const appRoutes: Routes = [
     path: 'login',
     component: LoginComponent,
   },
+  {
+    path: 'shop-cart',
+    component: ShopCartComponent,
+  },
 ];
 
 @NgModule({
@@ -39,6 +45,8 @@ const appRoutes: Routes = [
     TimerComponent,
     MessageComponent,
     LoginComponent,
+    ShopCartComponent,
+    ProductListComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],
