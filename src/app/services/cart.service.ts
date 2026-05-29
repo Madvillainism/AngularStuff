@@ -10,7 +10,7 @@ export class CartService {
   addToCart(product: Product) {}
 
   salute(name: string) {
-    alert('Salute from CartService' + name);
+    alert('Salute from CartService: ' + name);
     return 'Hello ' + name;
   }
 }
