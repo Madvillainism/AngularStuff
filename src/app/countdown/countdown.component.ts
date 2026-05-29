@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 @Component({
-  selector: 'app-countdown',
-  templateUrl: './countdown.component.html',
-  styleUrls: ['./countdown.component.scss'],
+    selector: 'app-countdown',
+    templateUrl: './countdown.component.html',
+    styleUrls: ['./countdown.component.scss'],
+    standalone: false
 })
 export class CountdownComponent implements OnInit, OnDestroy {
   countdownDate!: Date;
