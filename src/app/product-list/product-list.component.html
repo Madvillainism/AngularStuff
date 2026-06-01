@@ -1,1 +1,14 @@
-<p>product-list works!</p>
+<div>
+  <h1>Product List</h1>
+
+  @for (product of products(); track product.id) {
+    <div class="product">
+      <img [src]="product.img" alt="{{ product.name }}" class="product-image" />
+      <h2>{{ product.name }}</h2>
+      <p>Price: {{ product.price | currency }}</p>
+      <button mat-flat-button color="accent" (click)="addToCart(product)">
+        Add to Cart
+      </button>
+    </div>
+  }
+</div>

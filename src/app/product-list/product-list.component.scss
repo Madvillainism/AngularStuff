@@ -1,0 +1,16 @@
+button {
+  margin: 10px;
+  box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.5);
+}
+
+.product {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.product img {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
+}

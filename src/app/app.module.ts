@@ -36,6 +36,10 @@ const appRoutes: Routes = [
     path: 'shop-cart',
     component: ShopCartComponent,
   },
+  {
+    path: 'product-list',
+    component: ProductListComponent,
+  },
 ];
 
 @NgModule({
