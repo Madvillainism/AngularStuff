@@ -1,0 +1,115 @@
+<div class="filter-container">
+  <!-- Hidden Video Source -->
+  <video #videoElement class="hidden-video" autoplay playsinline muted></video>
+
+  <!-- Mirrored Output Canvas -->
+  <canvas #outputCanvas class="filter-canvas"></canvas>
+
+  @if (error()) {
+    <div class="error-banner" role="alert">
+      <mat-icon aria-hidden="true">error</mat-icon>
+      <span class="error-text">{{ error() }}</span>
+      <button class="error-dismiss" (click)="error.set(null)" aria-label="Descartar error">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
+
+  <!-- Panel Material — densidad compacta -->
+  <mat-card class="control-panel mat-elevation-z8" appearance="outlined">
+    <!-- Filtro -->
+    <div class="panel-section">
+      <span class="section-title">Filtro</span>
+      <mat-button-toggle-group
+        [value]="selectedEffect()"
+        (change)="selectedEffect.set($event.value)"
+        aria-label="Tipo de filtro"
+        hideSingleSelectionIndicator="false"
+        class="effect-toggles"
+      >
+        @for (effect of effects; track effect) {
+          <mat-button-toggle [value]="effect" [aria-label]="effectLabels[effect]">
+            <mat-icon>{{ effectIcons[effect] }}</mat-icon>
+            {{ effectLabels[effect] }}
+          </mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Intensidad -->
+    <div class="panel-section panel-slider">
+      <span class="section-title"
+        >Intensidad: <strong>{{ amount() }}%</strong></span
+      >
+      <mat-slider
+        min="0"
+        max="100"
+        step="1"
+        discrete
+        [displayWith]="displayWithPercent"
+        class="full-slider"
+        aria-label="Intensidad del filtro"
+      >
+        <input matSliderThumb [value]="amount()" (valueChange)="amount.set($event)" />
+      </mat-slider>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Color — ambos: deslizadores + selector -->
+    <div class="panel-section">
+      <span class="section-title">Tono RGB</span>
+
+      <div class="rgb-header">
+        <span class="rgb-preview" [style.background]="rgbLabel()" aria-hidden="true"></span>
+        <span class="rgb-label">{{ rgbLabel() }}</span>
+        <span class="rgb-hex">{{ hexColor() }}</span>
+      </div>
+
+      <div class="rgb-controls">
+        <!-- Selector de color nativo + Material field -->
+        <div class="color-picker-row">
+          <label class="color-picker-label" for="colorPicker">Selector</label>
+          <input
+            id="colorPicker"
+            type="color"
+            class="color-picker"
+            [value]="hexColor()"
+            (input)="onHexColorChange($event)"
+            aria-label="Selector de color"
+          />
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="hex-field">
+            <mat-label>Hex</mat-label>
+            <input matInput [value]="hexColor()" readonly />
+          </mat-form-field>
+        </div>
+
+        <div class="slider-stack">
+          <div class="slider-row">
+            <span class="slider-channel slider-r-label">R</span>
+            <mat-slider min="0" max="255" step="1" discrete [displayWith]="displayWith255" class="channel-slider slider-r">
+              <input matSliderThumb [value]="redAmount()" (valueChange)="redAmount.set($event)" aria-label="Rojo" />
+            </mat-slider>
+            <span class="slider-value">{{ redAmount() }}</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-channel slider-g-label">G</span>
+            <mat-slider min="0" max="255" step="1" discrete [displayWith]="displayWith255" class="channel-slider slider-g">
+              <input matSliderThumb [value]="greenAmount()" (valueChange)="greenAmount.set($event)" aria-label="Verde" />
+            </mat-slider>
+            <span class="slider-value">{{ greenAmount() }}</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-channel slider-b-label">B</span>
+            <mat-slider min="0" max="255" step="1" discrete [displayWith]="displayWith255" class="channel-slider slider-b">
+              <input matSliderThumb [value]="blueAmount()" (valueChange)="blueAmount.set($event)" aria-label="Azul" />
+            </mat-slider>
+            <span class="slider-value">{{ blueAmount() }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>

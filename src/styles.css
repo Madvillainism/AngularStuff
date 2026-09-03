@@ -1,1 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+/* Prebuilt azure-blue ya incluye el tema base; densidad compacta aplicada abajo */
+@use '@angular/material' as mat;
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Densidad compacta (-2) para todo el app — reduce 8px vs default (0) */
+html {
+  @include mat.theme((
+    color: mat.$azure-palette,
+    typography: Roboto,
+    density: -2,
+  ));
+}
