@@ -83,7 +83,10 @@ export class FingerFilterComponent implements OnInit, OnDestroy {
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   });
 
-  rgbLabel = computed(() => `rgb(${this.redAmount()}, ${this.greenAmount()}, ${this.blueAmount()})`);
+  rgbLabel = computed(
+    () =>
+      `rgb(${this.redAmount()}, ${this.greenAmount()}, ${this.blueAmount()})`,
+  );
 
   displayWithPercent = (v: number): string => `${Math.round(v)}%`;
   displayWith255 = (v: number): string => `${Math.round(v)}`;
@@ -102,9 +105,16 @@ export class FingerFilterComponent implements OnInit, OnDestroy {
 
   private hexToRgb(hex: string): { r: number; g: number; b: number } {
     const n = hex.replace('#', '');
-    const full = n.length === 3 ? n.split('').map((c) => c + c).join('') : n;
+    const full =
+      n.length === 3
+        ? n
+            .split('')
+            .map((c) => c + c)
+            .join('')
+        : n;
     const int = parseInt(full, 16);
-    if (Number.isNaN(int) || full.length !== 6) return { r: 128, g: 128, b: 128 };
+    if (Number.isNaN(int) || full.length !== 6)
+      return { r: 128, g: 128, b: 128 };
     return { r: (int >> 16) & 255, g: (int >> 8) & 255, b: int & 255 };
   }
 
@@ -115,16 +125,18 @@ export class FingerFilterComponent implements OnInit, OnDestroy {
   private isDestroyed = false;
 
   // Smoothed Landmark Coordinates (Lerp memory)
-  private smoothedTopThumb: Point | null = null;
-  private smoothedTopIndex: Point | null = null;
-  private smoothedBottomThumb: Point | null = null;
-  private smoothedBottomIndex: Point | null = null;
+  private smoothedLeftThumb: Point | null = null;
+  private smoothedLeftIndex: Point | null = null;
+  private smoothedRightThumb: Point | null = null;
+  private smoothedRightIndex: Point | null = null;
   private lerpFactor = 0.35; // Lower values = smoother/slower, Higher values = faster/sharper
 
   async ngOnInit(): Promise<void> {
     const ctx = this.canvasRef.nativeElement.getContext('2d');
     if (!ctx) {
-      this.error.set('Canvas 2D context unavailable — browser may not support canvas rendering.');
+      this.error.set(
+        'Canvas 2D context unavailable — browser may not support canvas rendering.',
+      );
       return;
     }
     this.ctx = ctx;
@@ -175,7 +187,9 @@ export class FingerFilterComponent implements OnInit, OnDestroy {
     } catch (e: unknown) {
       if (e instanceof DOMException) {
         if (e.name === 'NotAllowedError') {
-          throw new Error('Camera permission denied — please allow camera access and reload.');
+          throw new Error(
+            'Camera permission denied — please allow camera access and reload.',
+          );
         }
         if (e.name === 'NotFoundError') {
           throw new Error('No camera found — please connect a camera device.');
@@ -216,61 +230,72 @@ export class FingerFilterComponent implements OnInit, OnDestroy {
       const handA = results.landmarks[0];
       const handB = results.landmarks[1];
 
-      const handACenterY = (handA[4].y + handA[8].y) / 2;
-      const handBCenterY = (handB[4].y + handB[8].y) / 2;
+      /*  const handACenterY = (handA[4].y + handA[8].y) / 2;
+      const handBCenterY = (handB[4].y + handB[8].y) / 2; */
 
-      const topHand = handACenterY < handBCenterY ? handA : handB;
-      const bottomHand = handACenterY < handBCenterY ? handB : handA;
+      const labelA = results.handedness?.[0]?.[0]?.categoryName ?? '';
+      const labelB = results.handedness?.[0]?.[0]?.categoryName ?? '';
+      let leftHand: typeof handA, rightHand: typeof handA;
+      if ((labelA === 'Left') !== (labelB === 'Left') && labelA && labelB) {
+        leftHand = labelA === 'Left' ? handA : handB;
+        rightHand = labelA === 'Left' ? handB : handA;
+      } else {
+        // fallback: el de menor x-centro es izq (en espacio de video, sin espejo CSS)
+        const cxA = (handA[4].x + handA[8].x) / 2;
+        const cxB = (handB[4].x + handB[8].x) / 2;
+        leftHand = cxA < cxB ? handA : handB;
+        rightHand = cxA < cxB ? handB : handA;
+      }
 
       // Raw coordinates
-      const targetTopThumb = {
-        x: topHand[4].x * canvas.width,
-        y: topHand[4].y * canvas.height,
+      const targetLeftThumb = {
+        x: leftHand[4].x * canvas.width,
+        y: leftHand[4].y * canvas.height,
       };
-      const targetTopIndex = {
-        x: topHand[8].x * canvas.width,
-        y: topHand[8].y * canvas.height,
+      const targetLeftIndex = {
+        x: leftHand[8].x * canvas.width,
+        y: leftHand[8].y * canvas.height,
       };
-      const targetBottomThumb = {
-        x: bottomHand[4].x * canvas.width,
-        y: bottomHand[4].y * canvas.height,
+      const targetRightThumb = {
+        x: rightHand[4].x * canvas.width,
+        y: rightHand[4].y * canvas.height,
       };
-      const targetBottomIndex = {
-        x: bottomHand[8].x * canvas.width,
-        y: bottomHand[8].y * canvas.height,
+      const targetRightIndex = {
+        x: rightHand[8].x * canvas.width,
+        y: rightHand[8].y * canvas.height,
       };
 
       // Apply Lerp Interpolation
-      this.smoothedTopThumb = this.lerpPoint(
-        this.smoothedTopThumb,
-        targetTopThumb,
+      this.smoothedLeftThumb = this.lerpPoint(
+        this.smoothedLeftThumb,
+        targetLeftThumb,
       );
-      this.smoothedTopIndex = this.lerpPoint(
-        this.smoothedTopIndex,
-        targetTopIndex,
+      this.smoothedLeftIndex = this.lerpPoint(
+        this.smoothedLeftIndex,
+        targetLeftIndex,
       );
-      this.smoothedBottomThumb = this.lerpPoint(
-        this.smoothedBottomThumb,
-        targetBottomThumb,
+      this.smoothedRightThumb = this.lerpPoint(
+        this.smoothedRightThumb,
+        targetRightThumb,
       );
-      this.smoothedBottomIndex = this.lerpPoint(
-        this.smoothedBottomIndex,
-        targetBottomIndex,
+      this.smoothedRightIndex = this.lerpPoint(
+        this.smoothedRightIndex,
+        targetRightIndex,
       );
 
       this.applyFilterMask(
-        this.smoothedTopThumb,
-        this.smoothedTopIndex,
-        this.smoothedBottomThumb,
-        this.smoothedBottomIndex,
+        this.smoothedLeftThumb,
+        this.smoothedLeftIndex,
+        this.smoothedRightThumb,
+        this.smoothedRightIndex,
         video,
       );
     } else {
       // Reset smoothed points on hand tracking loss
-      this.smoothedTopThumb = null;
-      this.smoothedTopIndex = null;
-      this.smoothedBottomThumb = null;
-      this.smoothedBottomIndex = null;
+      this.smoothedLeftThumb = null;
+      this.smoothedLeftIndex = null;
+      this.smoothedRightThumb = null;
+      this.smoothedRightIndex = null;
     }
 
     this.animationFrameId = requestAnimationFrame(this.renderLoop);

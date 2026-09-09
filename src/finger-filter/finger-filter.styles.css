@@ -23,8 +23,8 @@
 
 .error-banner {
   position: absolute;
-  top: 16px;
-  left: 50%;
+  top: 10px;
+  left: 20%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
@@ -69,8 +69,7 @@
 /* === Panel Material — densidad compacta === */
 .control-panel {
   position: absolute;
-  bottom: 24px;
-  left: 50%;
+  left: 20%;
   transform: translateX(-50%);
   background: rgba(15, 23, 42, 0.78);
   backdrop-filter: blur(12px);
@@ -211,9 +210,15 @@
   flex-shrink: 0;
 }
 
-.slider-r-label { color: #ff6b6b; }
-.slider-g-label { color: #51e68a; }
-.slider-b-label { color: #6ea8ff; }
+.slider-r-label {
+  color: #ff6b6b;
+}
+.slider-g-label {
+  color: #51e68a;
+}
+.slider-b-label {
+  color: #6ea8ff;
+}
 
 .channel-slider {
   flex: 1;
@@ -229,9 +234,15 @@
 }
 
 /* Ajuste Material: deslizadores de color — trazo activo según canal */
-.slider-r .mdc-slider__track--active_fill { border-color: #ff4d4d; }
-.slider-g .mdc-slider__track--active_fill { border-color: #4dff88; }
-.slider-b .mdc-slider__track--active_fill { border-color: #4d94ff; }
+.slider-r .mdc-slider__track--active_fill {
+  border-color: #ff4d4d;
+}
+.slider-g .mdc-slider__track--active_fill {
+  border-color: #4dff88;
+}
+.slider-b .mdc-slider__track--active_fill {
+  border-color: #4d94ff;
+}
 
 /* Responsive */
 @media (max-width: 600px) {
